@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Post } from '@nestjs/common';
 import { MatchService } from "./match.service";
 import { wallet } from "nanocurrency-web";
 
@@ -11,7 +11,9 @@ export class MatchController {
     return await this.matchService.findAll();
   }
 
+  @Post()
   async createNewMatch(player1Address: string) {
+    await this.matchService.createNewMatch();
     const tempWallet = generateWallet();
     return {
       paymentAddress: tempWallet.address,
