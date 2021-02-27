@@ -3,6 +3,10 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { MainModule } from "../main.module";
 import { MatchService } from "../match/match.service";
+import {
+  ICreateNewMatchRequest,
+  ICreateNewMatchResponse,
+} from "../match/match.controller";
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
@@ -23,20 +27,41 @@ describe("AppController (e2e)", () => {
   });
 
   it("/ (POST)", async () => {
-    const player1Address =
-      "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
+    const requestBody: ICreateNewMatchRequest = {
+      player1Address:
+        "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk",
+      player1BetAmount: 10,
+      player2BetAmount: 5,
+    };
 
     await request(app.getHttpServer())
       .post("/")
-      .send({ player1Address: player1Address })
+      .send(requestBody)
       .expect(201)
       .expect((response) => {
-        expect(response.body.paymentAddress.startsWith("nano_")).toBeTruthy();
+        const body: ICreateNewMatchResponse = response.body;
+        expect(body.link).not.toBeNull();
+        expect(body.player1Address).toEqual(requestBody.player1Address);
+        expect(body.player1PaymentRequired).toEqual(
+          requestBody.player1BetAmount,
+        );
+        expect(body.player2PaymentRequired).toEqual(
+          requestBody.player2BetAmount,
+        );
+
+        expect(body.player1PaymentDone).toEqual(0);
+        expect(body.player2PaymentDone).toEqual(0);
+
+        expect(body.paymentAddress.startsWith("nano_")).toBeTruthy();
       });
 
     expect(mockedMatchService.createNewMatch).toHaveBeenCalledTimes(1);
-    expect(mockedMatchService.createNewMatch).toHaveBeenLastCalledWith(
-      player1Address,
-    );
+
+    const parameters = mockedMatchService.createNewMatch.mock.calls[0];
+    expect(parameters).toEqual([
+      requestBody.player1Address,
+      requestBody.player1BetAmount,
+      requestBody.player2BetAmount,
+    ]);
   });
 });

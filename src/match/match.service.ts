@@ -15,7 +15,11 @@ export class MatchService {
     return await this.matchModel.findAll();
   }
 
-  async createNewMatch(player1Address: string) {
+  async createNewMatch(
+    player1Address: string,
+    player1BetAmount: number = 0,
+    player2BetAmount: number = 0,
+  ) {
     const match: IMatch = {
       player1Address: player1Address,
       player1PaymentDone: 0,

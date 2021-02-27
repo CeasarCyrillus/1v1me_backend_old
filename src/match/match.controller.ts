@@ -2,9 +2,6 @@ import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
 import { wallet } from "nanocurrency-web";
 
-class CreateNewMatchDto {
-  player1Address: string;
-}
 @Controller()
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
@@ -15,15 +12,56 @@ export class MatchController {
   }
 
   @Post()
-  async createNewMatch(@Body() createNewMatchDto: CreateNewMatchDto) {
-    await this.matchService.createNewMatch(createNewMatchDto.player1Address);
+  async createNewMatch(
+    @Body() request: ICreateNewMatchRequest,
+  ): Promise<ICreateNewMatchResponse> {
+    const player1Address = request.player1Address;
+    const player1BetAmount = request.player1BetAmount;
+    const player2BetAmount = request.player2BetAmount;
+
     const tempWallet = generateWallet();
+    await this.matchService.createNewMatch(
+      player1Address,
+      player1BetAmount,
+      player2BetAmount,
+    );
+
     return {
+      link: "LINK",
+
+      player1Address: player1Address,
+      player2Address: null,
+
+      player1PaymentDone: 0,
+      player2PaymentDone: 0,
+
+      player1PaymentRequired: request.player1BetAmount,
+      player2PaymentRequired: request.player2BetAmount,
+
       paymentAddress: tempWallet.address,
     };
   }
 }
 
+export interface ICreateNewMatchRequest {
+  player1Address: string;
+  player1BetAmount: number;
+  player2BetAmount: number;
+}
+
+export interface ICreateNewMatchResponse {
+  link: string;
+  player1Address: string;
+  player2Address: null;
+
+  player1PaymentRequired: number;
+  player2PaymentRequired: number;
+
+  player1PaymentDone: number;
+  player2PaymentDone: number;
+
+  paymentAddress: string;
+}
 
 interface NanoWallet {
   address: string;

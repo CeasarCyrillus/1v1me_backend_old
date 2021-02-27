@@ -36,7 +36,7 @@ describe("MatchService", () => {
     const player1Address =
       "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
 
-    const createdMatch = await matchService.createNewMatch(player1Address);
+    const createdMatch = await matchService.createNewMatch(player1Address, 0, 0);
 
     expect(createdMatch.player1Address).toEqual(player1Address);
   });
