@@ -6,20 +6,27 @@ import { MatchService } from "./match/match.service";
 import * as config from "./config/database.dev.json";
 import { MatchModule } from './match/match.module';
 
-export const databaseModule = SequelizeModule.forRoot({
+export const devDatabaseModule = SequelizeModule.forRoot({
   dialect: "postgres",
-  host: config.host,
-  port: config.port,
-  username: config.user,
-  password: config.password,
-  database: config.database,
+  host: config.database.dev.host,
+  port: config.database.dev.port,
+  username: config.database.dev.user,
+  password: config.database.dev.password,
+  database: config.database.dev.database,
+  models: [Match],
+  quoteIdentifiers: false,
+  logging: false,
+});
+
+export const testDatabaseModule = SequelizeModule.forRoot({
+  dialect: "sqlite",
   models: [Match],
   quoteIdentifiers: false,
   logging: false,
 });
 
 @Module({
-  imports: [databaseModule, MainModule, MatchModule],
+  imports: [devDatabaseModule, MainModule, MatchModule],
   controllers: [MatchController],
   providers: [MatchService],
 })

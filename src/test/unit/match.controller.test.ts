@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { MatchController } from "../../match/match.controller";
-import { databaseModule } from "../../main.module";
+import { devDatabaseModule } from "../../main.module";
 import { MatchService } from "../../match/match.service";
 import { MatchModule } from "../../match/match.module";
 
@@ -9,7 +9,7 @@ describe("MatchController", () => {
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [databaseModule, MatchModule],
+      imports: [devDatabaseModule, MatchModule],
       controllers: [MatchController],
       providers: [MatchService],
     }).compile();

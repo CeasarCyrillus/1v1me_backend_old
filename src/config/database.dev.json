@@ -1,7 +1,18 @@
 {
-  "database": "1v1me_database",
-  "user": "ceasarcyrillus",
-  "password": "",
-  "host": "localhost",
-  "port": 5432
+  "database": {
+    "dev": {
+      "database": "1v1me_database",
+      "user": "ceasarcyrillus",
+      "password": "",
+      "host": "localhost",
+      "port": 5432
+    },
+    "test": {
+      "database": "1v1me_database_test",
+      "user": "ceasarcyrillus",
+      "password": "",
+      "host": "localhost",
+      "port": 5432
+    }
+  }
 }
