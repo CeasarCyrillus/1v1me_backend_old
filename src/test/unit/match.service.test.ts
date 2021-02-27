@@ -8,7 +8,6 @@ import { Match } from '../../match/match.model';
 
 describe("MatchService", () => {
   let matchService: MatchService;
-  let database: Sequelize;
 
   beforeAll(async () => {
     await setupDatabase("test");
@@ -22,7 +21,6 @@ describe("MatchService", () => {
     }).compile();
 
     matchService = app.get<MatchService>(MatchService);
-    database = app.get<Sequelize>(Sequelize);
   });
 
   afterEach(async () => {

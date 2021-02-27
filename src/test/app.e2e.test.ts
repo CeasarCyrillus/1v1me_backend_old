@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from "@nestjs/common";
 import * as request from "supertest";
 import { MainModule } from "../main.module";
 import { MatchService } from "../match/match.service";
@@ -9,8 +9,22 @@ import {
 } from "../match/match.controller";
 
 describe("AppController (e2e)", () => {
+  const PLAYER_1_ADDRESS =
+    "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
+  const PAYMENT_ADDRESS =
+    "nano_98prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
+
   let app: INestApplication;
-  const mockedMatchService = { createNewMatch: jest.fn((params) => params) };
+  const mockedMatchService = {
+    createNewMatch: jest.fn(() => {
+      return {
+        player1Address: PLAYER_1_ADDRESS,
+        player1PaymentRequired: 10,
+        player2PaymentRequired: 5,
+        walletAddress: PAYMENT_ADDRESS
+      };
+    }),
+  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -30,14 +44,13 @@ describe("AppController (e2e)", () => {
 
   afterEach(() => {
     jest.resetAllMocks();
-  })
+  });
 
   it("Create a new match accepted", async () => {
     const requestBody: CreateNewMatchRequest = {
-      player1Address:
-        "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk",
+      player1Address: PLAYER_1_ADDRESS,
       player1BetAmount: 10,
-      player2BetAmount: 5,
+      player2BetAmount: 5
     };
 
     await request(app.getHttpServer())
@@ -46,7 +59,7 @@ describe("AppController (e2e)", () => {
       .expect(201)
       .expect((response) => {
         const body: ICreateNewMatchResponse = response.body;
-        expect(body.link).not.toBeNull();
+        expect(body.link).toEqual("/match/6577033808677713");
         expect(body.player1Address).toEqual(requestBody.player1Address);
         expect(body.player1PaymentRequired).toEqual(
           requestBody.player1BetAmount,
@@ -58,7 +71,7 @@ describe("AppController (e2e)", () => {
         expect(body.player1PaymentDone).toEqual(0);
         expect(body.player2PaymentDone).toEqual(0);
 
-        expect(body.paymentAddress.startsWith("nano_")).toBeTruthy();
+        expect(body.paymentAddress).toEqual(PAYMENT_ADDRESS);
       });
 
     expect(mockedMatchService.createNewMatch).toHaveBeenCalledTimes(1);
@@ -74,10 +87,7 @@ describe("AppController (e2e)", () => {
   it("Create a new match rejected BAD_REQUEST", async () => {
     const requestBody = {};
 
-    await request(app.getHttpServer())
-      .post("/")
-      .send(requestBody)
-      .expect(400);
+    await request(app.getHttpServer()).post("/").send(requestBody).expect(400);
 
     expect(mockedMatchService.createNewMatch).not.toHaveBeenCalled();
   });

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
-import { wallet } from "nanocurrency-web";
 import { IsNotEmpty } from 'class-validator';
+import { generateLink } from '../utils';
 
 
 export class CreateNewMatchRequest {
@@ -40,9 +40,9 @@ export class MatchController {
     );
 
     return {
-      link: "LINK",
+      link: generateLink(match.id, match.player1Address),
 
-      player1Address: player1Address,
+      player1Address: match.player1Address,
       player2Address: null,
 
       player1PaymentDone: 0,
