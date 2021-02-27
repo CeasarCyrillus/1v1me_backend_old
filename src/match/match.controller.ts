@@ -1,6 +1,20 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
 import { wallet } from "nanocurrency-web";
+import { IsNotEmpty } from 'class-validator';
+
+
+export class CreateNewMatchRequest {
+  @IsNotEmpty()
+  player1Address: string;
+
+  @IsNotEmpty()
+  player1BetAmount: number;
+
+  @IsNotEmpty()
+  player2BetAmount: number;
+}
+
 
 @Controller()
 export class MatchController {
@@ -13,7 +27,7 @@ export class MatchController {
 
   @Post()
   async createNewMatch(
-    @Body() request: ICreateNewMatchRequest,
+    @Body() request: CreateNewMatchRequest,
   ): Promise<ICreateNewMatchResponse> {
     const player1Address = request.player1Address;
     const player1BetAmount = request.player1BetAmount;
@@ -41,12 +55,6 @@ export class MatchController {
       paymentAddress: tempWallet.address,
     };
   }
-}
-
-export interface ICreateNewMatchRequest {
-  player1Address: string;
-  player1BetAmount: number;
-  player2BetAmount: number;
 }
 
 export interface ICreateNewMatchResponse {

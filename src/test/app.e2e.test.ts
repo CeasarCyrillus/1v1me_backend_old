@@ -1,10 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { INestApplication } from "@nestjs/common";
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from "supertest";
 import { MainModule } from "../main.module";
 import { MatchService } from "../match/match.service";
 import {
-  ICreateNewMatchRequest,
+  CreateNewMatchRequest,
   ICreateNewMatchResponse,
 } from "../match/match.controller";
 
@@ -23,11 +23,17 @@ describe("AppController (e2e)", () => {
       .compile();
 
     app = moduleFixture.createNestApplication();
+    app.enableCors();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
   });
 
-  it("/ (POST)", async () => {
-    const requestBody: ICreateNewMatchRequest = {
+  afterEach(() => {
+    jest.resetAllMocks();
+  })
+
+  it("Create a new match accepted", async () => {
+    const requestBody: CreateNewMatchRequest = {
       player1Address:
         "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk",
       player1BetAmount: 10,
@@ -63,5 +69,16 @@ describe("AppController (e2e)", () => {
       requestBody.player1BetAmount,
       requestBody.player2BetAmount,
     ]);
+  });
+
+  it("Create a new match rejected BAD_REQUEST", async () => {
+    const requestBody = {};
+
+    await request(app.getHttpServer())
+      .post("/")
+      .send(requestBody)
+      .expect(400);
+
+    expect(mockedMatchService.createNewMatch).not.toHaveBeenCalled();
   });
 });
