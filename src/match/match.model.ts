@@ -1,13 +1,22 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { AutoIncrement, Column, CreatedAt, Model, PrimaryKey, Table, Unique, UpdatedAt } from 'sequelize-typescript';
+
+export class BaseTable<T> extends Model<T> {
+  @CreatedAt
+  createdAt: Date;
+
+  @UpdatedAt
+  updatedAt: Date;
+}
 
 @Table
-export class Match extends Model<Match> {
+export class Match extends BaseTable<Match> {
+  @PrimaryKey
+  @AutoIncrement
+  @Unique
   @Column
-  firstName: string;
+  id: number;
 
   @Column
-  lastName: string;
-
-  @Column({ defaultValue: true })
-  isActive: boolean;
+  player1Address: string;
 }
+

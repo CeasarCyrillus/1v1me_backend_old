@@ -1,0 +1,7 @@
+{
+  "database": "1v1me_database",
+  "user": "ceasarcyrillus",
+  "password": "",
+  "host": "localhost",
+  "port": 5432
+}
