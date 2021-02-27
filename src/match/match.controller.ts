@@ -33,8 +33,7 @@ export class MatchController {
     const player1BetAmount = request.player1BetAmount;
     const player2BetAmount = request.player2BetAmount;
 
-    const tempWallet = generateWallet();
-    await this.matchService.createNewMatch(
+    const match = await this.matchService.createNewMatch(
       player1Address,
       player1BetAmount,
       player2BetAmount,
@@ -49,10 +48,10 @@ export class MatchController {
       player1PaymentDone: 0,
       player2PaymentDone: 0,
 
-      player1PaymentRequired: request.player1BetAmount,
-      player2PaymentRequired: request.player2BetAmount,
+      player1PaymentRequired: match.player1PaymentRequired,
+      player2PaymentRequired: match.player2PaymentRequired,
 
-      paymentAddress: tempWallet.address,
+      paymentAddress: match.walletAddress,
     };
   }
 }
@@ -70,19 +69,3 @@ export interface ICreateNewMatchResponse {
 
   paymentAddress: string;
 }
-
-interface NanoWallet {
-  address: string;
-  passPhrase: string;
-  privateKey: string;
-}
-
-const generateWallet = (): NanoWallet => {
-  const passPhrase = wallet.generate().mnemonic;
-  const newWallet = wallet.fromLegacyMnemonic(passPhrase);
-  return {
-    address: newWallet.accounts[0].address,
-    passPhrase: newWallet.mnemonic,
-    privateKey: newWallet.accounts[0].privateKey,
-  };
-};

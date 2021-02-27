@@ -1,5 +1,6 @@
 import * as config from '../config/config.json';
 import { createDb, migrate } from 'postgres-migrations';
+import { wallet } from 'nanocurrency-web';
 
 export const setupDatabase = async (env: "dev" | "test") => {
   const dbConfig = {
@@ -17,3 +18,19 @@ export const setupDatabase = async (env: "dev" | "test") => {
 
   await migrate(dbConfig, "src/migrations")
 }
+
+export interface NanoWallet {
+  address: string;
+  passPhrase: string;
+  privateKey: string;
+}
+
+export const generateWallet = (): NanoWallet => {
+  const passPhrase = wallet.generate().mnemonic;
+  const newWallet = wallet.fromLegacyMnemonic(passPhrase);
+  return {
+    address: newWallet.accounts[0].address,
+    passPhrase: newWallet.mnemonic,
+    privateKey: newWallet.accounts[0].privateKey,
+  };
+};
