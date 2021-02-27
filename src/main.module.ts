@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
+import { MatchController } from "./match/matchController";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Match } from "./match/match.model";
 import { MatchService } from "./match/match.service";
-import { MatchModule } from "./match/match.module";
 import * as config from "./config/database.dev.json";
+import { MatchModule } from './match/match.module';
 
 export const databaseModule = SequelizeModule.forRoot({
   dialect: "postgres",
@@ -19,8 +19,8 @@ export const databaseModule = SequelizeModule.forRoot({
 });
 
 @Module({
-  imports: [databaseModule, MatchModule],
-  controllers: [AppController],
+  imports: [databaseModule, MainModule, MatchModule],
+  controllers: [MatchController],
   providers: [MatchService],
 })
-export class AppModule {}
+export class MainModule {}

@@ -4,6 +4,6 @@ import { Match } from './match.model';
 
 @Module({
   imports: [SequelizeModule.forFeature([Match])],
-  exports: [SequelizeModule], // TODO: should be MatchService
+  exports: [SequelizeModule]
 })
 export class MatchModule {}

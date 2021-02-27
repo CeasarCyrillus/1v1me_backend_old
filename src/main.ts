@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { MainModule } from './main.module';
 import {createDb, migrate} from "postgres-migrations"
 import * as config from "./config/database.dev.json"
 
@@ -21,7 +21,7 @@ const bootstrap = async () => {
   await migrate(dbConfig, "src/migrations")
 
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(MainModule);
   await app.enableCors();
   await app.listen(PORT);
 };
