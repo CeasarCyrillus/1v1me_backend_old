@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { MatchController } from "./match/matchController";
+import { MatchController } from "./match/match.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Match } from "./match/match.model";
 import { MatchService } from "./match/match.service";
