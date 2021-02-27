@@ -1,6 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { MatchService } from "./match/match.service";
+import { Match } from "./match/match.model";
 
 @Controller()
 export class AppController {
@@ -10,9 +11,8 @@ export class AppController {
   ) {}
 
   @Get()
-  getHello(): string {
-    const newMatch = this.matchService.createNewMatch();
-    console.log(newMatch);
+  async getHello(): Promise<Match[]> {
+    await this.matchService.createNewMatch();
     return this.matchService.findAll();
   }
 }

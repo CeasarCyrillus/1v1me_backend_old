@@ -1,4 +1,6 @@
-CREATE TABLE Matches (
-    id INT PRIMARY KEY NOT NULL,
-    player1Address TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS Matches (
+    id SERIAL PRIMARY KEY,
+    player1Address TEXT NOT NULL,
+    createdAt DATE,
+    updatedAt DATE
 );

@@ -1,22 +1,7 @@
-import { AutoIncrement, Column, CreatedAt, Model, PrimaryKey, Table, Unique, UpdatedAt } from 'sequelize-typescript';
-
-export class BaseTable<T> extends Model<T> {
-  @CreatedAt
-  createdAt: Date;
-
-  @UpdatedAt
-  updatedAt: Date;
-}
+import { Column, Model, Table } from "sequelize-typescript";
 
 @Table
-export class Match extends BaseTable<Match> {
-  @PrimaryKey
-  @AutoIncrement
-  @Unique
-  @Column
-  id: number;
-
+export class Match extends Model<Match> {
   @Column
   player1Address: string;
 }
-
