@@ -16,12 +16,12 @@ export class MatchService {
   }
 
   async createNewMatch(player1Address: string) {
-    await this.database.transaction(async (t) => {
-      const transactionHost = { transaction: t };
-      await this.matchModel.create(
-        { player1Address: player1Address } as Match,
-        transactionHost,
-      );
-    });
+    const transaction = await this.database.transaction();
+    const match = await this.matchModel.create(
+      { player1Address: player1Address } as Match,
+      { transaction },
+    );
+    await transaction.commit();
+    return match;
   }
 }
