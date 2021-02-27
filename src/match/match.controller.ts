@@ -1,7 +1,10 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
 import { wallet } from "nanocurrency-web";
 
+class CreateNewMatchDto {
+  player1Address: string;
+}
 @Controller()
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
@@ -12,14 +15,15 @@ export class MatchController {
   }
 
   @Post()
-  async createNewMatch(player1Address: string) {
-    await this.matchService.createNewMatch();
+  async createNewMatch(@Body() createNewMatchDto: CreateNewMatchDto) {
+    await this.matchService.createNewMatch(createNewMatchDto.player1Address);
     const tempWallet = generateWallet();
     return {
       paymentAddress: tempWallet.address,
     };
   }
 }
+
 
 interface NanoWallet {
   address: string;

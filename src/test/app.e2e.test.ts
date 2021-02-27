@@ -6,7 +6,7 @@ import { MatchService } from "../match/match.service";
 
 describe("AppController (e2e)", () => {
   let app: INestApplication;
-  const mockedMatchService = { createNewMatch: jest.fn() };
+  const mockedMatchService = { createNewMatch: jest.fn((params) => params) };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -35,5 +35,8 @@ describe("AppController (e2e)", () => {
       });
 
     expect(mockedMatchService.createNewMatch).toHaveBeenCalledTimes(1);
+    expect(mockedMatchService.createNewMatch).toHaveBeenLastCalledWith(
+      player1Address,
+    );
   });
 });

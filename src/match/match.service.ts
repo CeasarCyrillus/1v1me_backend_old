@@ -15,11 +15,11 @@ export class MatchService {
     return await this.matchModel.findAll();
   }
 
-  async createNewMatch() {
+  async createNewMatch(player1Address: string) {
     await this.database.transaction(async (t) => {
       const transactionHost = { transaction: t };
       await this.matchModel.create(
-        { player1Address: "asdasdasd" } as Match,
+        { player1Address: player1Address } as Match,
         transactionHost,
       );
     });
