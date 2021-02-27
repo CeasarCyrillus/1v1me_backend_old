@@ -3,7 +3,7 @@ import { MatchController } from "./match/match.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Match } from "./match/match.model";
 import { MatchService } from "./match/match.service";
-import * as config from "./config/database.dev.json";
+import * as config from "../config/config.json";
 import { MatchModule } from './match/match.module';
 
 export const devDatabaseModule = SequelizeModule.forRoot({
@@ -19,7 +19,12 @@ export const devDatabaseModule = SequelizeModule.forRoot({
 });
 
 export const testDatabaseModule = SequelizeModule.forRoot({
-  dialect: "sqlite",
+  dialect: "postgres",
+  host: config.database.test.host,
+  port: config.database.test.port,
+  username: config.database.test.user,
+  password: config.database.test.password,
+  database: config.database.test.database,
   models: [Match],
   quoteIdentifiers: false,
   logging: false,

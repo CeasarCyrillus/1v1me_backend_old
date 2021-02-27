@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { MainModule } from './main.module';
 import {createDb, migrate} from "postgres-migrations"
-import * as config from "./config/database.dev.json"
+import * as config from "../config/config.json"
 
 export const setupDatabase = async (env: "dev" | "test") => {
   const dbConfig = {

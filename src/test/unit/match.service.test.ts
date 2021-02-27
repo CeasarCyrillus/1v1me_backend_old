@@ -1,15 +1,19 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { MatchController } from "../../match/match.controller";
-import { databaseModule } from "../../main.module";
 import { MatchService } from "../../match/match.service";
 import { MatchModule } from "../../match/match.module";
+import { testDatabaseModule } from '../../main.module';
+import { setupDatabase } from '../../main';
 
 describe("MatchService", () => {
   let matchService: MatchService;
 
+  beforeAll(async () => {
+    await setupDatabase("test");
+  });
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      imports: [MatchModule],
+      imports: [MatchModule, testDatabaseModule],
       controllers: [],
       providers: [MatchService],
     }).compile();
