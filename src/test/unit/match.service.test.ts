@@ -1,11 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { MatchService } from "../../match/match.service";
 import { MatchModule } from "../../match/match.module";
-import { setupDatabase } from '../../main';
-import { testDatabaseModule } from '../../main.module';
+import { setupDatabase } from '../../utils';
+import { testDatabaseModule } from '../utils';
+import { Sequelize } from 'sequelize-typescript';
+import { Match } from '../../match/match.model';
 
 describe("MatchService", () => {
   let matchService: MatchService;
+  let database: Sequelize;
 
   beforeAll(async () => {
     await setupDatabase("test");
@@ -19,6 +22,14 @@ describe("MatchService", () => {
     }).compile();
 
     matchService = app.get<MatchService>(MatchService);
+    database = app.get<Sequelize>(Sequelize);
+  });
+
+  afterEach(async () => {
+    await Match.destroy({
+      where: {},
+      truncate: true
+    })
   });
 
   it("saves match in db", async () => {

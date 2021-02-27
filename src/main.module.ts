@@ -18,17 +18,6 @@ export const devDatabaseModule = SequelizeModule.forRoot({
   logging: false,
 });
 
-export const testDatabaseModule = SequelizeModule.forRoot({
-  dialect: "postgres",
-  host: config.database.test.host,
-  port: config.database.test.port,
-  username: config.database.test.user,
-  password: config.database.test.password,
-  database: config.database.test.database,
-  models: [Match],
-  quoteIdentifiers: false,
-  logging: false,
-});
 
 @Module({
   imports: [devDatabaseModule, MainModule, MatchModule],
