@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
-import { Match } from "./match.model";
+import { IMatch, Match } from "./match.model";
 import { Sequelize } from "sequelize-typescript";
 
 @Injectable()
@@ -16,12 +16,23 @@ export class MatchService {
   }
 
   async createNewMatch(player1Address: string) {
+    const match: IMatch = {
+      player1Address: player1Address,
+      player1PaymentDone: 0,
+      player1PaymentRequired: 0,
+      player2Address: "",
+      player2PaymentDone: 0,
+      player2PaymentRequired: 0,
+      walletAddress: "",
+      walletPrivateKey: "",
+      walletPhrase: "",
+    };
+
     const transaction = await this.database.transaction();
-    const match = await this.matchModel.create(
-      { player1Address: player1Address } as Match,
-      { transaction },
-    );
+    const savedMatch = await this.matchModel.create(match as Match, {
+      transaction,
+    });
     await transaction.commit();
-    return match;
+    return savedMatch;
   }
 }
