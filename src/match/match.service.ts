@@ -11,14 +11,17 @@ export class MatchService {
     private database: Sequelize,
   ) {}
 
-  findAll() {
-    return this.matchModel.findAll();
+  async findAll() {
+    return await this.matchModel.findAll();
   }
 
   async createNewMatch() {
     await this.database.transaction(async (t) => {
       const transactionHost = { transaction: t };
-      await this.matchModel.create({player1Address: "asdasdasd"} as Match, transactionHost);
+      await this.matchModel.create(
+        { player1Address: "asdasdasd" } as Match,
+        transactionHost,
+      );
     });
   }
 }

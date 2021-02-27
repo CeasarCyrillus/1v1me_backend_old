@@ -19,8 +19,9 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return empty list"', async () => {
+      const matches = await appController.getMatches();
+      expect(matches).toEqual([]);
     });
   });
 });
