@@ -11,6 +11,7 @@ import {
 describe("AppController (e2e)", () => {
   const PLAYER_1_ADDRESS =
     "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
+  const PLAYER_1_INVALID_ADDRESS = "not-valid-address";
   const PAYMENT_ADDRESS =
     "nano_98prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
 
@@ -21,7 +22,7 @@ describe("AppController (e2e)", () => {
         player1Address: PLAYER_1_ADDRESS,
         player1PaymentRequired: 10,
         player2PaymentRequired: 5,
-        walletAddress: PAYMENT_ADDRESS
+        walletAddress: PAYMENT_ADDRESS,
       };
     }),
   };
@@ -50,11 +51,11 @@ describe("AppController (e2e)", () => {
     const requestBody: CreateNewMatchRequest = {
       player1Address: PLAYER_1_ADDRESS,
       player1BetAmount: 10,
-      player2BetAmount: 5
+      player2BetAmount: 5,
     };
 
     await request(app.getHttpServer())
-      .post("/")
+      .post("/match")
       .send(requestBody)
       .expect(201)
       .expect((response) => {
@@ -84,10 +85,28 @@ describe("AppController (e2e)", () => {
     ]);
   });
 
-  it("Create a new match rejected BAD_REQUEST", async () => {
+  it("Create a new match rejected because body is empty", async () => {
     const requestBody = {};
 
-    await request(app.getHttpServer()).post("/").send(requestBody).expect(400);
+    await request(app.getHttpServer())
+      .post("/match")
+      .send(requestBody)
+      .expect(400);
+
+    expect(mockedMatchService.createNewMatch).not.toHaveBeenCalled();
+  });
+
+  it("Create a new match rejected because nano address is invalid", async () => {
+    const requestBody: CreateNewMatchRequest = {
+      player1Address: PLAYER_1_INVALID_ADDRESS,
+      player1BetAmount: 10,
+      player2BetAmount: 5,
+    };
+
+    await request(app.getHttpServer())
+      .post("/match")
+      .send(requestBody)
+      .expect(400);
 
     expect(mockedMatchService.createNewMatch).not.toHaveBeenCalled();
   });

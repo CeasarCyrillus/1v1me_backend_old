@@ -2,9 +2,10 @@ import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
 import { IsNotEmpty } from "class-validator";
 import { generateLink } from "../utils";
+import { IsNanoAddress } from '../validators';
 
 export class CreateNewMatchRequest {
-  @IsNotEmpty()
+  @IsNanoAddress()
   player1Address: string;
 
   @IsNotEmpty()
