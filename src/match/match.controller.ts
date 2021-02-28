@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
-import { IsNotEmpty } from 'class-validator';
-import { generateLink } from '../utils';
-
+import { IsNotEmpty } from "class-validator";
+import { generateLink } from "../utils";
 
 export class CreateNewMatchRequest {
   @IsNotEmpty()
@@ -15,8 +14,7 @@ export class CreateNewMatchRequest {
   player2BetAmount: number;
 }
 
-
-@Controller()
+@Controller("/match")
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
