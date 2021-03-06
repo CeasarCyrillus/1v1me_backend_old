@@ -27,7 +27,7 @@ export class MatchController {
   @Post()
   async createNewMatch(
     @Body() request: CreateNewMatchRequest,
-  ): Promise<ICreateNewMatchResponse> {
+  ): Promise<CreateNewMatchResponse> {
     const player1Address = request.player1Address;
     const player1BetAmount = request.player1BetAmount;
     const player2BetAmount = request.player2BetAmount;
@@ -39,6 +39,7 @@ export class MatchController {
     );
 
     return {
+      id: "123",
       link: generateLink(match.id, match.player1Address),
 
       player1Address: match.player1Address,
@@ -55,7 +56,8 @@ export class MatchController {
   }
 }
 
-export interface ICreateNewMatchResponse {
+export interface CreateNewMatchResponse {
+  id: string;
   link: string;
   player1Address: string;
   player2Address: null;

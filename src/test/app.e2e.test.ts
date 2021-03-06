@@ -5,7 +5,7 @@ import { MainModule } from "../main.module";
 import { MatchService } from "../match/match.service";
 import {
   CreateNewMatchRequest,
-  ICreateNewMatchResponse,
+  CreateNewMatchResponse,
 } from "../match/match.controller";
 
 describe("AppController (e2e)", () => {
@@ -59,7 +59,7 @@ describe("AppController (e2e)", () => {
       .send(requestBody)
       .expect(201)
       .expect((response) => {
-        const body: ICreateNewMatchResponse = response.body;
+        const body: CreateNewMatchResponse = response.body;
         expect(body.link).toEqual("/match/6577033808677713");
         expect(body.player1Address).toEqual(requestBody.player1Address);
         expect(body.player1PaymentRequired).toEqual(

@@ -16,6 +16,7 @@ export const IsNanoAddress = (validationOptions?: ValidationOptions) => (
     options: validationOptions,
     validator: {
       validate(value: string, args: ValidationArguments) {
+        if (!value) return false;
         return tools.validateAddress(value);
       },
     },
