@@ -1,0 +1,4 @@
+ALTER TABLE Matches
+    ADD COLUMN player1MatchId TEXT DEFAULT NULL,
+    ADD COLUMN player2MatchId TEXT DEFAULT NULL
+

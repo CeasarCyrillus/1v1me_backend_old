@@ -1,9 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { MatchService } from "../../match/match.service";
 import { MatchModule } from "../../match/match.module";
-import { generateMatchId, setupDatabase } from '../../utils';
+import { setupDatabase } from "../../utils";
 import { testDatabaseModule } from "../utils";
-import { Sequelize } from "sequelize-typescript";
 import { Match } from "../../match/match.model";
 
 describe("MatchService", () => {
@@ -51,5 +50,22 @@ describe("MatchService", () => {
     expect(createdMatch.walletAddress.length).toBe(65);
     expect(createdMatch.walletPrivateKey.length).toBe(64);
     expect(createdMatch.walletPhrase.split(" ").length).toBe(24);
+  });
+
+  it("saved match has player1MatchId and player2MatchId", async () => {
+    const player1Address =
+      "nano_34prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
+
+    const createdMatch = await matchService.createNewMatch(
+      player1Address,
+      100,
+      100,
+    );
+
+    expect(createdMatch.player1MatchId).toHaveLength(40);
+    expect(createdMatch.player2MatchId).toHaveLength(40);
+    expect(createdMatch.player1MatchId).not.toEqual(
+      createdMatch.player2MatchId,
+    );
   });
 });

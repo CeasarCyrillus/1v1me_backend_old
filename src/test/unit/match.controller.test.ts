@@ -33,6 +33,8 @@ describe("MatchController", () => {
     expect(createdMatch.player2Address).toBeNull();
     expect(createdMatch.player1PaymentRequired).toEqual(16.7);
     expect(createdMatch.player2PaymentRequired).toEqual(18.0);
-
+    expect(createdMatch.player1MatchId).toHaveLength(40);
+    expect(createdMatch.player2MatchId).toHaveLength(40);
+    expect(createdMatch.player1MatchId).not.toEqual(createdMatch.player2MatchId);
   });
 });

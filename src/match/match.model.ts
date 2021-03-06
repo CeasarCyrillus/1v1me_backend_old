@@ -20,6 +20,9 @@ export interface IMatch {
   walletPhrase: string;
   walletPrivateKey: string;
   walletAddress: string;
+
+  player1MatchId: string;
+  player2MatchId: string
 }
 
 @Table
@@ -51,4 +54,9 @@ export class Match extends Model<Match> implements IMatch{
   walletPrivateKey: string;
   @Column
   walletAddress: string;
+
+  @Column
+  player1MatchId: string;
+  @Column
+  player2MatchId: string;
 }

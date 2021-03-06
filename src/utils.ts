@@ -35,26 +35,29 @@ export const generateWallet = (): NanoWallet => {
   };
 };
 
-export const generateMatchId = (id: number, player1Address: string) =>
-  cyrb53(`${id}${player1Address}`).toString();
-
-export const generateLink = (id: number, player1Address: string) => {
-  return `/match/${generateMatchId(id, player1Address)}`;
+export const generateRandomString = () => {
+  const seed = (new Date().getMilliseconds() * (Math.random() + 1)).toString();
+  const str = (new Date().getMilliseconds() * (Math.random() + 1)).toString();
+  return FnvHash(str + seed, 2).toUpperCase();
 };
 
-const cyrb53 = (str: string, seed: number = 0) => {
-  let h1 = 0xdeadbeef ^ seed,
-    h2 = 0x41c6ce57 ^ seed;
-  for (let i = 0, ch; i < str.length; i++) {
-    ch = str.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
+const Fnv32a = (str: string) => {
+  let hashValue = 0x811c9dc5;
+  for (let i = 0, l = str.length; i < l; i++) {
+    hashValue ^= str.charCodeAt(i);
+    hashValue +=
+      (hashValue << 1) + (hashValue << 4) + (hashValue << 7) + (hashValue << 8) + (hashValue << 24);
   }
-  h1 =
-    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
-    Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 =
-    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
-    Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+  return ("0000000" + (hashValue >>> 0).toString(16)).substr(-8);
+};
+
+const FnvHash = (str: string, iterations = 1) => {
+  let totalHash = Fnv32a(str);
+  for(let i = 0; i < iterations; i++){
+    const h1 = Fnv32a(str);
+    const h2 = h1 + Fnv32a(h1 + str)
+    totalHash += h2;
+  }
+
+  return totalHash;
 };

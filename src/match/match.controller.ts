@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
 import { IsNotEmpty } from "class-validator";
-import { generateLink, generateMatchId } from '../utils';
-import { IsNanoAddress } from '../validators';
+import { IsNanoAddress } from "../validators";
 
 export class CreateNewMatchRequest {
   @IsNanoAddress()
@@ -39,9 +38,6 @@ export class MatchController {
     );
 
     return {
-      id: generateMatchId(match.id, match.player1Address),
-      link: generateLink(match.id, match.player1Address),
-
       player1Address: match.player1Address,
       player2Address: null,
 
@@ -52,13 +48,14 @@ export class MatchController {
       player2PaymentRequired: match.player2PaymentRequired,
 
       paymentAddress: match.walletAddress,
+
+      player1MatchId: match.player1MatchId,
+      player2MatchId: match.player2MatchId,
     };
   }
 }
 
 export interface CreateNewMatchResponse {
-  id: string;
-  link: string;
   player1Address: string;
   player2Address: null;
 
@@ -69,4 +66,7 @@ export interface CreateNewMatchResponse {
   player2PaymentDone: number;
 
   paymentAddress: string;
+
+  player1MatchId: string;
+  player2MatchId: string;
 }

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { IMatch, Match } from "./match.model";
 import { Sequelize } from "sequelize-typescript";
-import { generateWallet } from "../utils";
+import { generateRandomString, generateWallet } from '../utils';
 
 @Injectable()
 export class MatchService {
@@ -36,6 +36,9 @@ export class MatchService {
       walletAddress: nanoWallet.address,
       walletPrivateKey: nanoWallet.privateKey,
       walletPhrase: nanoWallet.passPhrase,
+
+      player1MatchId: generateRandomString(),
+      player2MatchId: generateRandomString(),
     };
 
     const transaction = await this.database.transaction();
