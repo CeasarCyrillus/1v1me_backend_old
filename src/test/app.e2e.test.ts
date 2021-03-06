@@ -60,6 +60,7 @@ describe("AppController (e2e)", () => {
       .expect(201)
       .expect((response) => {
         const body: CreateNewMatchResponse = response.body;
+        expect(body.id).toEqual("6577033808677713")
         expect(body.link).toEqual("/match/6577033808677713");
         expect(body.player1Address).toEqual(requestBody.player1Address);
         expect(body.player1PaymentRequired).toEqual(

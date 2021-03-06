@@ -35,10 +35,11 @@ export const generateWallet = (): NanoWallet => {
   };
 };
 
+export const generateMatchId = (id: number, player1Address: string) =>
+  cyrb53(`${id}${player1Address}`).toString();
+
 export const generateLink = (id: number, player1Address: string) => {
-  const str = `${id}${player1Address}`;
-  const matchId = cyrb53(str);
-  return `/match/${matchId}`;
+  return `/match/${generateMatchId(id, player1Address)}`;
 };
 
 const cyrb53 = (str: string, seed: number = 0) => {

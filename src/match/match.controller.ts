@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { MatchService } from "./match.service";
 import { IsNotEmpty } from "class-validator";
-import { generateLink } from "../utils";
+import { generateLink, generateMatchId } from '../utils';
 import { IsNanoAddress } from '../validators';
 
 export class CreateNewMatchRequest {
@@ -39,7 +39,7 @@ export class MatchController {
     );
 
     return {
-      id: "123",
+      id: generateMatchId(match.id, match.player1Address),
       link: generateLink(match.id, match.player1Address),
 
       player1Address: match.player1Address,
