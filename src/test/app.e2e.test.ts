@@ -6,7 +6,9 @@ import { MatchService } from "../match/match.service";
 import {
   CreateNewMatchRequest,
   CreateNewMatchResponse,
+  GetMatchResponse,
 } from "../match/match.controller";
+import { IMatch } from "../match/match.model";
 
 describe("AppController (e2e)", () => {
   const PLAYER_1_ADDRESS =
@@ -16,18 +18,38 @@ describe("AppController (e2e)", () => {
     "nano_98prihdxwz3u4ps8qjnn14p7ujyewkoxkwyxm3u665it8rg5rdqw84qrypzk";
 
   let app: INestApplication;
-  const mockedMatchService = {
-    createNewMatch: jest.fn(() => {
-      return {
-        player1Address: PLAYER_1_ADDRESS,
-        player1PaymentRequired: 10,
-        player2PaymentRequired: 5,
-        walletAddress: PAYMENT_ADDRESS,
-      };
-    }),
-  };
+
+  let mockedMatchService: { createNewMatch: any; getMatch: any };
 
   beforeEach(async () => {
+    const matchToReturn: IMatch = {
+      player1PaymentDone: 0,
+      player2PaymentDone: 0,
+
+      player1PaymentRequired: 10,
+      player2PaymentRequired: 5,
+
+      player1Address: PLAYER_1_ADDRESS,
+      player2Address: null,
+
+      walletAddress: PAYMENT_ADDRESS,
+      walletPhrase: "",
+      walletPrivateKey: "",
+
+      player1MatchId: "A98D97890A9KJ64AM9NA08J",
+      player2MatchId: "B13G71K90A9KJ64AM9NA07K",
+    };
+
+    mockedMatchService = {
+      createNewMatch: jest.fn(() => {
+        return Promise.resolve(matchToReturn);
+      }),
+
+      getMatch: jest.fn(() => {
+        return Promise.resolve(matchToReturn);
+      }),
+    };
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [MainModule],
       exports: [],
@@ -60,18 +82,7 @@ describe("AppController (e2e)", () => {
       .expect(201)
       .expect((response) => {
         const body: CreateNewMatchResponse = response.body;
-        expect(body.player1Address).toEqual(requestBody.player1Address);
-        expect(body.player1PaymentRequired).toEqual(
-          requestBody.player1BetAmount,
-        );
-        expect(body.player2PaymentRequired).toEqual(
-          requestBody.player2BetAmount,
-        );
-
-        expect(body.player1PaymentDone).toEqual(0);
-        expect(body.player2PaymentDone).toEqual(0);
-
-        expect(body.paymentAddress).toEqual(PAYMENT_ADDRESS);
+        expectMatchToBeInResponse(body);
       });
 
     expect(mockedMatchService.createNewMatch).toHaveBeenCalledTimes(1);
@@ -82,6 +93,20 @@ describe("AppController (e2e)", () => {
       requestBody.player1BetAmount,
       requestBody.player2BetAmount,
     ]);
+  });
+
+  it("get match accepted", async () => {
+    await request(app.getHttpServer())
+      .get("/match/A98D97890A9KJ64AM9NA08J")
+      .expect(200)
+      .expect((response) => {
+        const body: GetMatchResponse = response.body;
+        expectMatchToBeInResponse(body);
+      });
+
+    expect(mockedMatchService.getMatch).toHaveBeenCalledWith(
+      "A98D97890A9KJ64AM9NA08J",
+    );
   });
 
   it("Create a new match rejected because body is empty", async () => {
@@ -109,4 +134,19 @@ describe("AppController (e2e)", () => {
 
     expect(mockedMatchService.createNewMatch).not.toHaveBeenCalled();
   });
+
+  const expectMatchToBeInResponse = (body: GetMatchResponse) => {
+    expect(body.player1Address).toEqual(PLAYER_1_ADDRESS);
+    expect(body.player1PaymentRequired).toEqual(10);
+    expect(body.player2PaymentRequired).toEqual(5);
+
+    expect(body.player1PaymentDone).toEqual(0);
+    expect(body.player2PaymentDone).toEqual(0);
+
+    expect(body.paymentAddress).toEqual(PAYMENT_ADDRESS);
+
+    expect(body.player1MatchId).toHaveLength(23);
+    expect(body.player2MatchId).toHaveLength(23);
+    expect(body.player1MatchId).not.toEqual(body.player2MatchId);
+  };
 });

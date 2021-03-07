@@ -2,20 +2,16 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { IMatch, Match } from "./match.model";
 import { Sequelize } from "sequelize-typescript";
-import { generateRandomString, generateWallet } from '../utils';
+import { generateRandomString, generateWallet } from "../utils";
+import { match } from "assert";
 
 @Injectable()
-export class MatchService {
+export class MatchService implements IMatchService {
   constructor(
     @InjectModel(Match)
     private matchModel: typeof Match,
     private database: Sequelize,
-  ) {
-  }
-
-  async findAll() {
-    return await this.matchModel.findAll();
-  }
+  ) {}
 
   async createNewMatch(
     player1Address: string,
@@ -48,4 +44,22 @@ export class MatchService {
     await transaction.commit();
     return savedMatch;
   }
+
+  async getMatch(matchId: string): Promise<Match | null> {
+    return await this.matchModel.findOne({
+      where: {
+        player1MatchId: matchId,
+      },
+    });
+  }
+}
+
+export interface IMatchService {
+  createNewMatch(
+    player1Address: string,
+    player1BetAmount: number,
+    player2BetAmount: number,
+  ): Promise<Match>;
+
+  getMatch(matchId: string): Promise<Match | null>;
 }

@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { MatchService } from "./match.service";
 import { IsNotEmpty } from "class-validator";
 import { IsNanoAddress } from "../validators";
+import { Request } from 'express';
+import { Param } from "@nestjs/common/decorators/http/route-params.decorator";
 
 export class CreateNewMatchRequest {
   @IsNanoAddress()
@@ -18,9 +20,24 @@ export class CreateNewMatchRequest {
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}
 
-  @Get()
-  async getMatches() {
-    return await this.matchService.findAll();
+  @Get(":matchId")
+  async getMatch(@Param() params: {matchId: string}): Promise<GetMatchResponse> {
+    const match = await this.matchService.getMatch(params.matchId);
+    return {
+      player1Address: match.player1Address,
+      player2Address: match.player2Address,
+
+      player1PaymentDone: 0,
+      player2PaymentDone: 0,
+
+      player1PaymentRequired: match.player1PaymentRequired,
+      player2PaymentRequired: match.player2PaymentRequired,
+
+      paymentAddress: match.walletAddress,
+
+      player1MatchId: match.player1MatchId,
+      player2MatchId: match.player2MatchId,
+    };
   }
 
   @Post()
@@ -55,9 +72,10 @@ export class MatchController {
   }
 }
 
-export interface CreateNewMatchResponse {
+export type CreateNewMatchResponse = GetMatchResponse;
+export interface GetMatchResponse {
   player1Address: string;
-  player2Address: null;
+  player2Address: string | null;
 
   player1PaymentRequired: number;
   player2PaymentRequired: number;
