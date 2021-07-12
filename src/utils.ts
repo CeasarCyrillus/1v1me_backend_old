@@ -26,8 +26,9 @@ export interface NanoWallet {
 }
 
 export const generateWallet = (): NanoWallet => {
-  const passPhrase = wallet.generate().mnemonic;
+  const passPhrase = "guitar solution achieve surface dry health scan verb fork fitness suit baby visa team another verb earn hood shine antenna dune true certain elephant"//wallet.generate().mnemonic;
   const newWallet = wallet.fromLegacyMnemonic(passPhrase);
+  console.log( newWallet.accounts[0].privateKey)
   return {
     address: newWallet.accounts[0].address,
     passPhrase: newWallet.mnemonic,
